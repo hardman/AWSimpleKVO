@@ -7,10 +7,15 @@
 #import <Foundation/Foundation.h>
 
 /*
+ 功能如下：
+ - 支持block回调
+ - 支持一次添加多参数
+ - 不需要removeObserver，监听会随对象自动删除
+ - 可设置忽略重复值
+ - 线程安全
  限制如下：
  1. options只能使用 NSKeyValueObservingOptionOld和NSKeyValueObservingOptionNew
- 2.
- 
+ 2. 不支持多级keyPath，如 "a.b.c"
  */
 
 @class AWSimpleKVO;
