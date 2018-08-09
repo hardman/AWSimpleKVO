@@ -63,32 +63,32 @@ static NSString *_getStructTypeWithTypeEncode(NSString *typeEncode){
 
 ///支持的key类型
 typedef enum : NSUInteger {
-    AWSimpleKVOSupporedIvarTypeUnSupport,
+    AWSimpleKVOSupportedIvarTypeUnSupport,
     
-    AWSimpleKVOSupporedIvarTypeChar,
-    AWSimpleKVOSupporedIvarTypeInt,
-    AWSimpleKVOSupporedIvarTypeShort,
-    AWSimpleKVOSupporedIvarTypeLong,
-    AWSimpleKVOSupporedIvarTypeLongLong,
-    AWSimpleKVOSupporedIvarTypeUChar,
-    AWSimpleKVOSupporedIvarTypeUInt,
-    AWSimpleKVOSupporedIvarTypeUShort,
-    AWSimpleKVOSupporedIvarTypeULong,
-    AWSimpleKVOSupporedIvarTypeULongLong,
-    AWSimpleKVOSupporedIvarTypeFloat,
-    AWSimpleKVOSupporedIvarTypeDouble,
-    AWSimpleKVOSupporedIvarTypeBool,
+    AWSimpleKVOSupportedIvarTypeChar,
+    AWSimpleKVOSupportedIvarTypeInt,
+    AWSimpleKVOSupportedIvarTypeShort,
+    AWSimpleKVOSupportedIvarTypeLong,
+    AWSimpleKVOSupportedIvarTypeLongLong,
+    AWSimpleKVOSupportedIvarTypeUChar,
+    AWSimpleKVOSupportedIvarTypeUInt,
+    AWSimpleKVOSupportedIvarTypeUShort,
+    AWSimpleKVOSupportedIvarTypeULong,
+    AWSimpleKVOSupportedIvarTypeULongLong,
+    AWSimpleKVOSupportedIvarTypeFloat,
+    AWSimpleKVOSupportedIvarTypeDouble,
+    AWSimpleKVOSupportedIvarTypeBool,
     
-    AWSimpleKVOSupporedIvarTypeObject,
+    AWSimpleKVOSupportedIvarTypeObject,
     
-    AWSimpleKVOSupporedIvarTypeCGSize,
-    AWSimpleKVOSupporedIvarTypeCGPoint,
-    AWSimpleKVOSupporedIvarTypeCGRect,
-    AWSimpleKVOSupporedIvarTypeCGVector,
-    AWSimpleKVOSupporedIvarTypeCGAffineTransform,
-    AWSimpleKVOSupporedIvarTypeUIEdgeInsets,
-    AWSimpleKVOSupporedIvarTypeUIOffset,
-} AWSimpleKVOSupporedIvarType;
+    AWSimpleKVOSupportedIvarTypeCGSize,
+    AWSimpleKVOSupportedIvarTypeCGPoint,
+    AWSimpleKVOSupportedIvarTypeCGRect,
+    AWSimpleKVOSupportedIvarTypeCGVector,
+    AWSimpleKVOSupportedIvarTypeCGAffineTransform,
+    AWSimpleKVOSupportedIvarTypeUIEdgeInsets,
+    AWSimpleKVOSupportedIvarTypeUIOffset,
+} AWSimpleKVOSupportedIvarType;
 
 #pragma mark - KVOItem
 
@@ -102,7 +102,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) id oldValue;
 
 ///key的类型
-@property (nonatomic, unsafe_unretained) AWSimpleKVOSupporedIvarType ivarType;
+@property (nonatomic, unsafe_unretained) AWSimpleKVOSupportedIvarType ivarType;
 ///key的typeCoding
 @property (nonatomic, copy) NSString *ivarTypeCode;
 
@@ -130,13 +130,6 @@ typedef enum : NSUInteger {
 #define AWSIMPLEKVO_DEFAULT_CONTEXT @"AWSIMPLEKVO_DEFAULT_CONTEXT"
 
 @implementation AWSimpleKVOItem
-
--(void) invokeBlockWithContext:(id)context obj:(id) obj change:(id) change{
-    id block = self.contextToBlocks[context];
-    if (block) {
-        ((void (^)(NSObject *, NSString *, NSDictionary *, void *))block)(obj, self.keyPath, change, (__bridge void *)context);
-    }
-}
 
 ///将context转为id
 -(id) idWithContext:(void *)context {
@@ -276,8 +269,16 @@ static void _childSetterNotify(AWSimpleKVOItem *item, id obj, NSString *keyPath,
         }else{
             item.oldValue = valueNew;
         }
-        for (id ctx in item.contextToBlocks.allKeys) {
-            [item invokeBlockWithContext:ctx obj:obj change:change];
+        
+        NSDictionary *ctxToBlks = nil;
+        @synchronized(item) {
+            ctxToBlks = item.contextToBlocks.copy;
+        }
+        for (id ctx in ctxToBlks.allKeys) {
+            id block = ctxToBlks[ctx];
+            if (block) {
+                ((void (^)(NSObject *, NSString *, NSDictionary *, void *))block)(obj, keyPath, change, (__bridge void *)ctx);
+            }
         }
     }
 }
@@ -482,7 +483,7 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
         return existsItem;
     }
     
-    AWSimpleKVOSupporedIvarType ivarType =  AWSimpleKVOSupporedIvarTypeUnSupport;
+    AWSimpleKVOSupportedIvarType ivarType =  AWSimpleKVOSupportedIvarTypeUnSupport;
     ///通过property获取的typeCoding无法在swift中使用，这里获取的是getter方法的typecoding
     const char * ivTypeCode = method_getTypeEncoding(class_getInstanceMethod([self simpleKVOSuperClass], NSSelectorFromString(keyPath)));
     
@@ -497,72 +498,72 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
     ///根据keypath的不同类型，对应不同的方法实现
     switch (*ivTypeCode) {
         case 'c':
-            ivarType = AWSimpleKVOSupporedIvarTypeChar;
+            ivarType = AWSimpleKVOSupportedIvarTypeChar;
             childMethod = (IMP)_childSetterChar;
             childMethodTypeCoding = @"v@:c";
             break;
         case 'i':
-            ivarType = AWSimpleKVOSupporedIvarTypeInt;
+            ivarType = AWSimpleKVOSupportedIvarTypeInt;
             childMethod = (IMP)_childSetterInt;
             childMethodTypeCoding = @"v@:i";
             break;
         case 's':
-            ivarType = AWSimpleKVOSupporedIvarTypeShort;
+            ivarType = AWSimpleKVOSupportedIvarTypeShort;
             childMethod = (IMP)_childSetterShort;
             childMethodTypeCoding = @"v@:s";
             break;
         case 'l':
-            ivarType = AWSimpleKVOSupporedIvarTypeLong;
+            ivarType = AWSimpleKVOSupportedIvarTypeLong;
             childMethod = (IMP)_childSetterLong;
             childMethodTypeCoding = @"v@:l";
             break;
         case 'q':
-            ivarType = AWSimpleKVOSupporedIvarTypeLongLong;
+            ivarType = AWSimpleKVOSupportedIvarTypeLongLong;
             childMethod = (IMP)_childSetterLongLong;
             childMethodTypeCoding = @"v@:q";
             break;
         case 'C':
-            ivarType = AWSimpleKVOSupporedIvarTypeUChar;
+            ivarType = AWSimpleKVOSupportedIvarTypeUChar;
             childMethod = (IMP)_childSetterUnsignedChar;
             childMethodTypeCoding = @"v@:C";
             break;
         case 'I':
-            ivarType = AWSimpleKVOSupporedIvarTypeUInt;
+            ivarType = AWSimpleKVOSupportedIvarTypeUInt;
             childMethod = (IMP)_childSetterUnsignedInt;
             childMethodTypeCoding = @"v@:I";
             break;
         case 'S':
-            ivarType = AWSimpleKVOSupporedIvarTypeUShort;
+            ivarType = AWSimpleKVOSupportedIvarTypeUShort;
             childMethod = (IMP)_childSetterUnsignedShort;
             childMethodTypeCoding = @"v@:S";
             break;
         case 'L':
-            ivarType = AWSimpleKVOSupporedIvarTypeULong;
+            ivarType = AWSimpleKVOSupportedIvarTypeULong;
             childMethod = (IMP)_childSetterUnsignedLong;
             childMethodTypeCoding = @"v@:L";
             break;
         case 'Q':
-            ivarType = AWSimpleKVOSupporedIvarTypeULongLong;
+            ivarType = AWSimpleKVOSupportedIvarTypeULongLong;
             childMethod = (IMP)_childSetterUnsignedLongLong;
             childMethodTypeCoding = @"v@:Q";
             break;
         case 'f':
-            ivarType = AWSimpleKVOSupporedIvarTypeFloat;
+            ivarType = AWSimpleKVOSupportedIvarTypeFloat;
             childMethod = (IMP)_childSetterFloat;
             childMethodTypeCoding = @"v@:f";
             break;
         case 'd':
-            ivarType = AWSimpleKVOSupporedIvarTypeDouble;
+            ivarType = AWSimpleKVOSupportedIvarTypeDouble;
             childMethod = (IMP)_childSetterDouble;
             childMethodTypeCoding = @"v@:d";
             break;
         case 'B':
-            ivarType = AWSimpleKVOSupporedIvarTypeBool;
+            ivarType = AWSimpleKVOSupportedIvarTypeBool;
             childMethod = (IMP)_childSetterBool;
             childMethodTypeCoding = @"v@:B";
             break;
         case '@':
-            ivarType = AWSimpleKVOSupporedIvarTypeObject;
+            ivarType = AWSimpleKVOSupportedIvarTypeObject;
             childMethod = (IMP)_childSetterObj;
             childMethodTypeCoding = @"v@:@";
             break;
@@ -570,31 +571,31 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
             NSString *typeEncode = [NSString stringWithUTF8String:ivTypeCode];
             NSString *structType = _getStructTypeWithTypeEncode(typeEncode);
             if ([structType isEqualToString: @"CGSize"]) {
-                ivarType = AWSimpleKVOSupporedIvarTypeCGSize;
+                ivarType = AWSimpleKVOSupportedIvarTypeCGSize;
                 childMethod = (IMP)_childSetterCGSize;
                 childMethodTypeCoding = @"v@:{CGSize=dd}";
             }else if([structType isEqualToString: @"CGPoint" ]) {
-                ivarType = AWSimpleKVOSupporedIvarTypeCGPoint;
+                ivarType = AWSimpleKVOSupportedIvarTypeCGPoint;
                 childMethod = (IMP)_childSetterCGPoint;
                 childMethodTypeCoding = @"v@:{CGPoint=dd}";
             }else if([structType isEqualToString: @"CGRect" ]) {
-                ivarType = AWSimpleKVOSupporedIvarTypeCGRect;
+                ivarType = AWSimpleKVOSupportedIvarTypeCGRect;
                 childMethod = (IMP)_childSetterCGRect;
                 childMethodTypeCoding = @"v@:{CGRect={CGPoint=dd}{CGSize=dd}}";
             }else if([structType isEqualToString: @"CGVector"]) {
-                ivarType = AWSimpleKVOSupporedIvarTypeCGVector;
+                ivarType = AWSimpleKVOSupportedIvarTypeCGVector;
                 childMethod = (IMP)_childSetterCGVector;
                 childMethodTypeCoding = @"v@:{CGVector=dd}";
             }else if([structType isEqualToString: @"CGAffineTransform"]) {
-                ivarType = AWSimpleKVOSupporedIvarTypeCGAffineTransform;
+                ivarType = AWSimpleKVOSupportedIvarTypeCGAffineTransform;
                 childMethod = (IMP)_childSetterCGAffineTransform;
                 childMethodTypeCoding = @"v@:{CGAffineTransform=dddddd}";
             }else if([structType isEqualToString: @"UIEdgeInsets"]) {
-                ivarType = AWSimpleKVOSupporedIvarTypeUIEdgeInsets;
+                ivarType = AWSimpleKVOSupportedIvarTypeUIEdgeInsets;
                 childMethod = (IMP)_childSetterUIEdgeInsets;
                 childMethodTypeCoding = @"v@:{UIEdgeInsets=dddd}";
             }else if([structType isEqualToString: @"UIOffset"]) {
-                ivarType = AWSimpleKVOSupporedIvarTypeUIOffset;
+                ivarType = AWSimpleKVOSupportedIvarTypeUIOffset;
                 childMethod = (IMP)_childSetterUIOffset;
                 childMethodTypeCoding = @"v@:{UIOffset=dd}";
             }
@@ -604,7 +605,7 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
             break;
     }
     
-    if (ivarType ==  AWSimpleKVOSupporedIvarTypeUnSupport){
+    if (ivarType ==  AWSimpleKVOSupportedIvarTypeUnSupport){
         return nil;
     }
     
@@ -744,11 +745,6 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
         self.isCounted = YES;
     }
     return classNew;
-}
-
-///承载回调方法
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    [[self.itemContainer itemWithKeyPath:keyPath] invokeBlockWithContext:(__bridge id)context obj:object change:change];
 }
 
 #pragma mark - 停止观察
