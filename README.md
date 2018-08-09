@@ -4,10 +4,6 @@
 
 既然系统KVO不好用，我们完全可以根据之前的思路，再造一个可以在项目中使用的KVO的轮子。
 
-代码已经上传到github: [https://github.com/hardman/AWSimpleKVO](https://github.com/hardman/AWSimpleKVO)。
-
-看了觉得有帮助的同学，可以点一下`github`的`star`。
-
 # 1. 功能介绍
 
 支持如下功能：
