@@ -485,6 +485,7 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
     
     AWSimpleKVOSupportedIvarType ivarType =  AWSimpleKVOSupportedIvarTypeUnSupport;
     ///通过property获取的typeCoding无法在swift中使用，这里获取的是getter方法的typecoding
+    ///所以我们如果只有setter方法没有getter方法是无法成功监听的。
     const char * ivTypeCode = method_getTypeEncoding(class_getInstanceMethod([self simpleKVOSuperClass], NSSelectorFromString(keyPath)));
     
     if (!ivTypeCode) {
