@@ -96,9 +96,7 @@ typedef enum : NSUInteger {
 ///监听的key
 @property (nonatomic, copy) NSString *keyPath;
 ///context用于区分监听者，可实现多处监听同一个对象的同一个key
-@property (nonatomic, unsafe_unretained) void *context;
-///触发监听回调
-@property (nonatomic, strong) void (^block)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context);
+@property (nonatomic, strong) NSMutableDictionary *contextToBlocks;
 
 ///保存的旧值
 @property (nonatomic, strong) id oldValue;
@@ -129,25 +127,62 @@ typedef enum : NSUInteger {
 @property (nonatomic, unsafe_unretained) BOOL isNonAtomic;
 @end
 
+#define AWSIMPLEKVO_DEFAULT_CONTEXT @"AWSIMPLEKVO_DEFAULT_CONTEXT"
+
 @implementation AWSimpleKVOItem
 
-///判断监听是否合法，目前来说没有不合法的可能。
--(BOOL) isValid {
-    return self.block && [self.keyPath isKindOfClass:[NSString class]];
+-(void) invokeBlockWithContext:(id)context obj:(id) obj change:(id) change{
+    id block = self.contextToBlocks[context];
+    if (block) {
+        ((void (^)(NSObject *, NSString *, NSDictionary *, void *))block)(obj, self.keyPath, change, (__bridge void *)context);
+    }
 }
 
-///调用监听block
--(BOOL) invokeBlockWithChange:(NSDictionary *)change obj:(NSObject *)obj{
-    if ([self isValid]){
-        self.block(obj, self.keyPath, change, self.context);
+///将context转为id
+-(id) idWithContext:(void *)context {
+    if (context) {
+        return (__bridge id)context;
+    }else{
+        return AWSIMPLEKVO_DEFAULT_CONTEXT;
+    }
+}
+
+///保存context和block 一一对应
+-(BOOL) addContext:(void *)context block:(id)block{
+    @synchronized(self) {
+        id idCtx = [self idWithContext: context];
+        if (self.contextToBlocks == nil) {
+            self.contextToBlocks = [[NSMutableDictionary alloc] init];
+        }else if(self.contextToBlocks[idCtx]){
+            return NO;
+        }
+        self.contextToBlocks[idCtx] = block;
         return YES;
     }
-    ///执行失败
-    return NO;
 }
-@end
 
-#define AWSIMPLEKVO_DEFAULT_CONTEXT @"default"
+///移除context
+-(void) removeContext:(void *)context{
+    @synchronized(self) {
+        [self.contextToBlocks removeObjectForKey:[self idWithContext: context]];
+    }
+}
+
+///是否包含context
+-(BOOL) containsContext:(void *)context{
+    @synchronized(self) {
+        return self.contextToBlocks[[self idWithContext: context]] != nil;
+    }
+}
+
+///包含的context数量
+-(NSInteger) contextsCount {
+    @synchronized(self) {
+        return [self.contextToBlocks count];
+    }
+}
+
+@end
 
 ///items 容器
 @interface AWSimpleKVOItemContainer: NSObject
@@ -167,54 +202,30 @@ typedef enum : NSUInteger {
     return self;
 }
 
-///获取相同keypath的所有item
--(NSDictionary *) itemDictWithKeyPath:(NSString *)keyPath {
+///获取item
+-(AWSimpleKVOItem *) itemWithKeyPath:(NSString *)keyPath {
     @synchronized(self) {
-        return [self.observerDict[keyPath] copy];
-    }
-}
-
-///将context转为id
--(id) idWithContext:(void *)context {
-    if (context) {
-        return (__bridge id)context;
-    }else{
-        return AWSIMPLEKVO_DEFAULT_CONTEXT;
+        return self.observerDict[keyPath];
     }
 }
 
 ///加入item
--(BOOL) addItem:(AWSimpleKVOItem *)item forKeyPath:(NSString *)keyPath context:(void *)context {
-    id idCtx = [self idWithContext:context];
+-(BOOL) addItem:(AWSimpleKVOItem *)item {
     @synchronized(self) {
-        NSMutableDictionary *dicts = self.observerDict[keyPath];
-        if (!dicts) {
-            dicts = [[NSMutableDictionary alloc] init];
-        }else if(dicts[idCtx]) {
+        if (self.observerDict[item.keyPath]) {
             return NO;
         }
         
-        dicts[idCtx] = item;
-        
-        self.observerDict[keyPath] = dicts;
+        self.observerDict[item.keyPath] = item;
     }
     
     return YES;
 }
 
-///获取item
--(AWSimpleKVOItem *) itemWithKeyPath:(NSString *) keyPath context:(void *)context{
-    id idCtx = [self idWithContext:context];
-    @synchronized(self) {
-        return self.observerDict[keyPath][idCtx];
-    }
-}
-
 ///移除item
--(void) removeItemWithKeyPath:(NSString *) keyPath context:(void *) context {
-    id idCtx = [self idWithContext:context];
+-(void) removeItemWithKeyPath:(NSString *) keyPath {
     @synchronized(self) {
-        self.observerDict[keyPath][idCtx] = nil;
+        self.observerDict[keyPath] = nil;
     }
 }
 
@@ -241,11 +252,11 @@ typedef enum : NSUInteger {
 #pragma mark - child methods 用于替换源类中的方法
 
 ///根据sel获取kvoItem
-static NSDictionary * _childSetterKVOItems(id obj, SEL sel) {
+static AWSimpleKVOItem * _childSetterKVOItem(id obj, SEL sel) {
     NSString *str = NSStringFromSelector(sel);
     NSString *keyPath = _getKeyPathWithSetterSel(str);
     AWSimpleKVO *simpleKVO = [obj awSimpleKVO];
-    return [simpleKVO.itemContainer itemDictWithKeyPath:keyPath];
+    return [simpleKVO.itemContainer itemWithKeyPath: keyPath];
 }
 
 ///当值已经改变，触发block通知
@@ -265,52 +276,50 @@ static void _childSetterNotify(AWSimpleKVOItem *item, id obj, NSString *keyPath,
         }else{
             item.oldValue = valueNew;
         }
-        item.block(obj, keyPath, change, nil);
+        for (id ctx in item.contextToBlocks.allKeys) {
+            [item invokeBlockWithContext:ctx obj:obj change:change];
+        }
     }
 }
 
 ///当key类型为对象(id)时，key的setter方法会指向此方法。
 static void _childSetterObj(id obj, SEL sel, id v) {
-    NSDictionary *items = _childSetterKVOItems(obj, sel);
-    for(AWSimpleKVOItem *item in items.allValues) {
-        if([obj awSimpleKVOIgnoreEqualValue] && item.oldValue == v ) {
-            return;
-        }
-        
-        id value = v;
-        if (item.isCopy) {
-            value = [value copy];
-        }
-        
-        if (!item.isNonAtomic) {
-            @synchronized(item) {
-                ((void (*)(id, SEL, id))item._superMethod)(obj, sel, value);
-            }
-        }else{
+    AWSimpleKVOItem *item = _childSetterKVOItem(obj, sel);
+    if([obj awSimpleKVOIgnoreEqualValue] && item.oldValue == v ) {
+        return;
+    }
+    
+    id value = v;
+    if (item.isCopy) {
+        value = [value copy];
+    }
+    
+    if (!item.isNonAtomic) {
+        @synchronized(item) {
             ((void (*)(id, SEL, id))item._superMethod)(obj, sel, value);
         }
-        
-        _childSetterNotify(item, obj, item.keyPath, value);
+    }else{
+        ((void (*)(id, SEL, id))item._superMethod)(obj, sel, value);
     }
+    
+    _childSetterNotify(item, obj, item.keyPath, value);
 }
 
 ///为数值key定义通用宏，结构同_childSetterObj只是类型不同。
 #define CHILD_SETTER_NUMBER(type, TypeSet, typeGet) \
 static void _childSetter##TypeSet(id obj, SEL sel, type v){ \
-    NSDictionary *items = _childSetterKVOItems(obj, sel); \
-    for(AWSimpleKVOItem *item in items.allValues) {\
-        if([obj awSimpleKVOIgnoreEqualValue] && [item.oldValue typeGet##Value] == v) { \
-            return; \
-        } \
-        if(!item.isNonAtomic) { \
-            @synchronized(item) { \
-                ((void (*)(id, SEL, type))item._superMethod)(obj, sel, v); \
-            } \
-        }else{ \
+    AWSimpleKVOItem *item = _childSetterKVOItem(obj, sel); \
+    if([obj awSimpleKVOIgnoreEqualValue] && [item.oldValue typeGet##Value] == v) { \
+        return; \
+    } \
+    if(!item.isNonAtomic) { \
+        @synchronized(item) { \
             ((void (*)(id, SEL, type))item._superMethod)(obj, sel, v); \
         } \
-        _childSetterNotify(item, obj, item.keyPath, [NSNumber numberWith##TypeSet:v]); \
+    }else{ \
+        ((void (*)(id, SEL, type))item._superMethod)(obj, sel, v); \
     } \
+    _childSetterNotify(item, obj, item.keyPath, [NSNumber numberWith##TypeSet:v]); \
 }
 
 CHILD_SETTER_NUMBER(char, Char, char)
@@ -330,20 +339,18 @@ CHILD_SETTER_NUMBER(bool, Bool, bool)
 ///为结构体key定义通用宏，结构同_childSetterObj只是类型不同。
 #define CHILD_SETTER_STRUCTURE(type, equalMethod) \
 static void _childSetter##type(id obj, SEL sel, type v) { \
-    NSDictionary *items = _childSetterKVOItems(obj, sel); \
-    for(AWSimpleKVOItem *item in items.allValues) {\
-        if([obj awSimpleKVOIgnoreEqualValue] && equalMethod([item.oldValue type##Value], v)){ \
-            return; \
-        } \
-        if(!item.isNonAtomic) { \
-            @synchronized(item) { \
-                ((void (*)(id, SEL, type))item._superMethod)(obj, sel, v); \
-            } \
-        }else{ \
+    AWSimpleKVOItem *item = _childSetterKVOItem(obj, sel); \
+    if([obj awSimpleKVOIgnoreEqualValue] && equalMethod([item.oldValue type##Value], v)){ \
+        return; \
+    } \
+    if(!item.isNonAtomic) { \
+        @synchronized(item) { \
             ((void (*)(id, SEL, type))item._superMethod)(obj, sel, v); \
         } \
-        _childSetterNotify(item, obj, item.keyPath, [NSValue valueWith##type: v]); \
+    }else{ \
+        ((void (*)(id, SEL, type))item._superMethod)(obj, sel, v); \
     } \
+    _childSetterNotify(item, obj, item.keyPath, [NSValue valueWith##type: v]); \
 }
 
 CHILD_SETTER_STRUCTURE(CGPoint, CGPointEqualToPoint)
@@ -467,6 +474,13 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
 
 ///收集传入参数，生成KVOItem
 -(AWSimpleKVOItem *)_genKvoItemWithKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block{
+    
+    ///是否已经存在
+    AWSimpleKVOItem *existsItem = [self.itemContainer itemWithKeyPath:keyPath];
+    if (existsItem) {
+        [existsItem addContext:context block:block];
+        return existsItem;
+    }
     
     AWSimpleKVOSupporedIvarType ivarType =  AWSimpleKVOSupporedIvarTypeUnSupport;
     ///通过property获取的typeCoding无法在swift中使用，这里获取的是getter方法的typecoding
@@ -595,9 +609,8 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
     }
     
     AWSimpleKVOItem *item = [[AWSimpleKVOItem alloc] init];
+    [item addContext:context block:block];
     item.keyPath = keyPath;
-    item.context = context;
-    item.block = block;
     item.ivarType = ivarType;
     item.ivarTypeCode = [[NSString stringWithFormat:@"%s", ivTypeCode] substringToIndex: 1];
     item.options = options;
@@ -659,13 +672,8 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
     AWSimpleKVOItem *item = nil;
     
     @synchronized(self){
-        if ([self.itemContainer itemWithKeyPath:keyPath context:context] != nil) {
-            return NO;
-        }
-        
         item = [self _genKvoItemWithKeyPath:keyPath options:options context:context block:block];
-    
-        [self.itemContainer addItem:item forKeyPath:keyPath context:context];
+        [self.itemContainer addItem:item];
     }
     
     ///生成
@@ -686,14 +694,10 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
     @synchronized(self) {
         for (NSString *keyPath in keyPaths) {
             if ([keyPath isKindOfClass:[NSString class]]) {
-                if ([self.itemContainer itemWithKeyPath:keyPath context:context]) {
-                    continue;
-                }else{
-                    AWSimpleKVOItem *item = [self _genKvoItemWithKeyPath:keyPath options:options context:context block:block];
-                    if (item) {
-                        [self.itemContainer addItem:item forKeyPath:keyPath context:context];
-                        [items addObject:item];
-                    }
+                AWSimpleKVOItem *item = [self _genKvoItemWithKeyPath:keyPath options:options context:context block:block];
+                if (item) {
+                    [self.itemContainer addItem:item];
+                    [items addObject:item];
                 }
             }
         }
@@ -744,20 +748,20 @@ CHILD_SETTER_STRUCTURE(UIOffset, UIOffsetEqualToOffset)
 
 ///承载回调方法
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    AWSimpleKVOItem *item = [self.itemContainer itemWithKeyPath:keyPath context:context];
-    if(![item invokeBlockWithChange:change obj:self.obj]){
-        [self awRemoveObserverForKeyPath:item.keyPath context:item.context];
-    }
+    [[self.itemContainer itemWithKeyPath:keyPath] invokeBlockWithContext:(__bridge id)context obj:object change:change];
 }
 
 #pragma mark - 停止观察
 ///停止观察属性
 -(void) _removeObserverForKeyPath:(NSString *)keyPath context:(void *)context{
-    AWSimpleKVOItem *item = [self.itemContainer itemWithKeyPath:keyPath context:context];
+    AWSimpleKVOItem *item = [self.itemContainer itemWithKeyPath:keyPath];
     if (item) {
-        [self.itemContainer removeItemWithKeyPath:keyPath context:context];
-        ///恢复method，没有removeMethod方法，可以使用replaceMethod达到相同的目的
-        class_replaceMethod(self.simpleKVOSuperClass, item._setSel, item._superMethod, item._childMethodTypeCoding.UTF8String);
+        [item removeContext:context];
+        if ([item contextsCount] <= 0) {
+            [self.itemContainer removeItemWithKeyPath:keyPath];
+            ///恢复method，没有removeMethod方法，可以使用replaceMethod达到相同的目的
+            class_replaceMethod(self.simpleKVOChildClass, item._setSel, item._superMethod, item._childMethodTypeCoding.UTF8String);
+        }
     }
 }
 
