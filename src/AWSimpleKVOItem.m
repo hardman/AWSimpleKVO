@@ -1,9 +1,8 @@
-//
-//  AWSimpleKVOItem.m
-//  AWSimpleKVO
-//
-//  Created by hongyuwang on 2019/3/13.
-//
+/*
+ copyright 2018-2019 wanghongyu.
+ The project page：https://github.com/hardman/AWSimpleKVO
+ My blog page: http://www.jianshu.com/u/1240d2400ca1
+ */
 
 #import "AWSimpleKVOItem.h"
 
@@ -34,11 +33,11 @@
     @synchronized(self) {
         id idCtx = [self idWithContext: context];
         if (self.contextToBlocks == nil) {
-            self.contextToBlocks = [[NSMutableDictionary alloc] init];
-        }else if(self.contextToBlocks[idCtx]){
+            self.contextToBlocks = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory capacity:1];
+        }else if([self.contextToBlocks objectForKey:idCtx]){
             return NO;
         }
-        self.contextToBlocks[idCtx] = block;
+        [self.contextToBlocks setObject:block forKey:idCtx];
         return YES;
     }
 }
@@ -53,7 +52,14 @@
 ///是否包含context
 -(BOOL) containsContext:(void *)context{
     @synchronized(self) {
-        return self.contextToBlocks[[self idWithContext: context]] != nil;
+        return [self.contextToBlocks objectForKey:[self idWithContext: context]] != nil;
+    }
+}
+
+///获取block
+-(id) blockWithContext:(void *)context{
+    @synchronized(self) {
+        return [self.contextToBlocks objectForKey:[self idWithContext: context]];
     }
 }
 
@@ -85,6 +91,9 @@
 
 ///获取item
 -(AWSimpleKVOItem *) itemWithKeyPath:(NSString *)keyPath {
+    if (![keyPath isKindOfClass:[NSString class]]) {
+        return nil;
+    }
     @synchronized(self) {
         return self.observerDict[keyPath];
     }
@@ -92,6 +101,9 @@
 
 ///加入item
 -(BOOL) addItem:(AWSimpleKVOItem *)item {
+    if (![item isKindOfClass:[AWSimpleKVOItem class]]) {
+        return nil;
+    }
     @synchronized(self) {
         if (self.observerDict[item.keyPath]) {
             return NO;
@@ -105,6 +117,9 @@
 
 ///移除item
 -(void) removeItemWithKeyPath:(NSString *) keyPath {
+    if (![keyPath isKindOfClass:[NSString class]]) {
+        return;
+    }
     @synchronized(self) {
         self.observerDict[keyPath] = nil;
     }

@@ -1,5 +1,5 @@
 /*
- copyright 2018 wanghongyu.
+ copyright 2018-2019 wanghongyu.
  The project page：https://github.com/hardman/AWSimpleKVO
  My blog page: http://www.jianshu.com/u/1240d2400ca1
  */
@@ -44,6 +44,12 @@
 
 ///增加计数
 -(BOOL) increaceForClassName:(NSString *)name{
+    if(![name isKindOfClass:[NSString class]]){
+        return NO;
+    }
+    if (!NSClassFromString(name)) {
+        return NO;
+    }
     @synchronized(self){
         AWSimpleKVOCounterItem *item = self.items[name];
         if(!item){
@@ -59,6 +65,12 @@
 
 ///减少计数
 -(BOOL) reduceForClassName:(NSString *)name{
+    if(![name isKindOfClass:[NSString class]]){
+        return NO;
+    }
+    if (!NSClassFromString(name)) {
+        return NO;
+    }
     @synchronized(self){
         AWSimpleKVOCounterItem *item = self.items[name];
         NSAssert(item != nil, @"错误");
@@ -75,6 +87,12 @@
 
 ///获取数量
 -(NSInteger) countForClassName:(NSString *)name {
+    if(![name isKindOfClass:[NSString class]]){
+        return 0;
+    }
+    if (!NSClassFromString(name)) {
+        return 0;
+    }
     @synchronized(self) {
         AWSimpleKVOCounterItem *item = self.items[name];
         if (item) {
@@ -82,6 +100,13 @@
         }else{
             return 0;
         }
+    }
+}
+
+///清空
+-(void) clean{
+    @synchronized(self) {
+        self.items = nil;
     }
 }
 

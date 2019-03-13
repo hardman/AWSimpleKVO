@@ -1,5 +1,5 @@
 /*
- copyright 2018 wanghongyu.
+ copyright 2018-2019 wanghongyu.
  The project page：https://github.com/hardman/AWSimpleKVO
  My blog page: http://www.jianshu.com/u/1240d2400ca1
  */
@@ -145,25 +145,25 @@
 ///添加监听方法
 -(BOOL)addObserverForKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block{
     ///检查参数
-    NSAssert(self.obj != nil, @"observer is nil");
     if(!self.obj) {
         return NO;
     }
     
     ///检查参数
-    NSAssert([keyPath isKindOfClass:[NSString class]], @"keyPath is invalid");
     if (![keyPath isKindOfClass:[NSString class]]) {
         return NO;
     }
     
+    if(!(options & NSKeyValueObservingOptionNew) && !(options & NSKeyValueObservingOptionOld)){
+        return NO;
+    }
+    
     ///检查参数
-    NSAssert(block != nil, @"block is invalid");
     if (!block) {
         return NO;
     }
     
     ///检查是否有setter方法
-    NSAssert([self.obj respondsToSelector: NSSelectorFromString([AWSimpleKVOUtils setterSelWithKeyPath:keyPath])], @"setter method is need");
     if(![self.obj respondsToSelector: NSSelectorFromString([AWSimpleKVOUtils setterSelWithKeyPath:keyPath])]){
         return NO;
     }
@@ -222,22 +222,29 @@
 
 -(void)_MyForwardInvocation:(NSInvocation *)anInvocation{
     AWSimpleKVO *this = [self awSimpleKVO];
+    
+    //获取旧值
     SEL setterSel = anInvocation.selector;
+    NSString *keyPath = [AWSimpleKVOUtils keyPathWithSetterSel:[NSString stringWithFormat:@"%s", sel_getName(setterSel)]];
+    AWSimpleKVOItem *item = [this.itemContainer itemWithKeyPath:keyPath];
+    id oldValue = item && (item.options & NSKeyValueObservingOptionOld) ? [this.obj valueForKey:keyPath]: nil;
+    
+    //调用原setter方法
     SEL realSel = sel_registerName([NSString stringWithFormat:@"%@%s", AWSIMPLEKVOPREFIX, sel_getName(setterSel)].UTF8String);
     [anInvocation setSelector:realSel];
     [anInvocation invoke];
-    AWSimpleKVOItem *item = [this.itemContainer itemWithKeyPath:[AWSimpleKVOUtils keyPathWithSetterSel:[NSString stringWithFormat:@"%s", sel_getName(setterSel)]]];
+    
+    //获取item
     if(!item){
         return;
     }
-    id oldValue = [this.obj valueForKey:item.keyPath];
     id newValue = [this.obj valueForKey:item.keyPath];
     if(this.obj.awSimpleKVOIgnoreEqualValue && [newValue isEqual:oldValue]){
         return;
     }
     
     NSMutableDictionary *change = [NSMutableDictionary new];
-    if(item.options & NSKeyValueObservingOptionOld){
+    if(oldValue){
         change[@"old"] = oldValue;
     }
     if(item.options & NSKeyValueObservingOptionNew){
@@ -247,8 +254,8 @@
         return;
     }
     
-    for (id ctx in item.contextToBlocks.allKeys) {
-        id block = item.contextToBlocks[ctx];
+    for (id ctx in item.contextToBlocks.keyEnumerator) {
+        id block = [item blockWithContext:(__bridge void *)ctx];
         if(block){
             ((void (^)(NSObject *, NSString *, NSDictionary *, void *))block)(this.obj, item.keyPath, [change copy], [item contextFromId:ctx]);
         }

@@ -1,9 +1,8 @@
-//
-//  AWSimpleKVOItem.h
-//  AWSimpleKVO
-//
-//  Created by hongyuwang on 2019/3/13.
-//
+/*
+ copyright 2018-2019 wanghongyu.
+ The project page：https://github.com/hardman/AWSimpleKVO
+ My blog page: http://www.jianshu.com/u/1240d2400ca1
+ */
 
 #import <Foundation/Foundation.h>
 
@@ -11,7 +10,7 @@
 ///监听的key
 @property (nonatomic, copy) NSString *keyPath;
 ///context用于区分监听者，可实现多处监听同一个对象的同一个key
-@property (nonatomic, strong) NSMutableDictionary *contextToBlocks;
+@property (nonatomic, strong) NSMapTable *contextToBlocks;
 ///保存的旧值
 @property (nonatomic, strong) id oldValue;
 ///监听选项
@@ -31,6 +30,8 @@
 -(void) removeContext:(void *)context;
 ///是否包含context
 -(BOOL) containsContext:(void *)context;
+///获取block
+-(id) blockWithContext:(void *)context;
 ///包含的context数量
 -(NSInteger) contextsCount;
 

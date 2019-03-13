@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		101C2D53223895D400A0DBC4 /* AWSimpleKVOUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C2D52223895D400A0DBC4 /* AWSimpleKVOUtils.m */; };
 		101C2D56223896AA00A0DBC4 /* AWSimpleKVOItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C2D55223896AA00A0DBC4 /* AWSimpleKVOItem.m */; };
+		101C2D5E2238AED100A0DBC4 /* AWSimpleKVOUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C2D5D2238AED100A0DBC4 /* AWSimpleKVOUtilsTests.m */; };
+		101C2D692238B86F00A0DBC4 /* AWSimpleKVOCounterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C2D682238B86F00A0DBC4 /* AWSimpleKVOCounterTests.m */; };
+		101C2D6B2238D86B00A0DBC4 /* AWSimpleKVOItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C2D6A2238D86B00A0DBC4 /* AWSimpleKVOItemTests.m */; };
+		101C2D6D2238F14700A0DBC4 /* AWSimpleKVOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C2D6C2238F14700A0DBC4 /* AWSimpleKVOTests.m */; };
 		1032AC792111BCBF000F4160 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032AC782111BCBF000F4160 /* AppDelegate.m */; };
 		1032AC7C2111BCBF000F4160 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032AC7B2111BCBF000F4160 /* ViewController.m */; };
 		1032AC7F2111BCC0000F4160 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1032AC7D2111BCC0000F4160 /* Main.storyboard */; };
@@ -16,16 +20,32 @@
 		1032AC842111BCC1000F4160 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1032AC822111BCC1000F4160 /* LaunchScreen.storyboard */; };
 		1032AC872111BCC1000F4160 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032AC862111BCC1000F4160 /* main.m */; };
 		1032AC902111BCDB000F4160 /* AWSimpleKVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032AC8F2111BCDB000F4160 /* AWSimpleKVO.m */; };
-		1032AC962111BD57000F4160 /* TestSimpleKVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032AC952111BD57000F4160 /* TestSimpleKVO.m */; };
+		1032AC962111BD57000F4160 /* AWSimpleKVOUsage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032AC952111BD57000F4160 /* AWSimpleKVOUsage.m */; };
 		1032ACCE211AC3D7000F4160 /* AWSimpleKVOCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032ACCD211AC3D7000F4160 /* AWSimpleKVOCounter.m */; };
 		1032ACD2211AC61B000F4160 /* NSObject+AWSimpleKVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032ACD1211AC61B000F4160 /* NSObject+AWSimpleKVO.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		101C2D602238AED100A0DBC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1032AC6C2111BCBF000F4160 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1032AC732111BCBF000F4160;
+			remoteInfo = AWSimpleKVO;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		101C2D51223895D400A0DBC4 /* AWSimpleKVOUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AWSimpleKVOUtils.h; sourceTree = "<group>"; };
 		101C2D52223895D400A0DBC4 /* AWSimpleKVOUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOUtils.m; sourceTree = "<group>"; };
 		101C2D54223896AA00A0DBC4 /* AWSimpleKVOItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AWSimpleKVOItem.h; sourceTree = "<group>"; };
 		101C2D55223896AA00A0DBC4 /* AWSimpleKVOItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOItem.m; sourceTree = "<group>"; };
+		101C2D5B2238AED000A0DBC4 /* AWSimpleKVOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSimpleKVOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		101C2D5D2238AED100A0DBC4 /* AWSimpleKVOUtilsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOUtilsTests.m; sourceTree = "<group>"; };
+		101C2D5F2238AED100A0DBC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		101C2D682238B86F00A0DBC4 /* AWSimpleKVOCounterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOCounterTests.m; sourceTree = "<group>"; };
+		101C2D6A2238D86B00A0DBC4 /* AWSimpleKVOItemTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOItemTests.m; sourceTree = "<group>"; };
+		101C2D6C2238F14700A0DBC4 /* AWSimpleKVOTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOTests.m; sourceTree = "<group>"; };
 		1032AC742111BCBF000F4160 /* AWSimpleKVO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AWSimpleKVO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1032AC772111BCBF000F4160 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1032AC782111BCBF000F4160 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -38,8 +58,8 @@
 		1032AC862111BCC1000F4160 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1032AC8E2111BCDB000F4160 /* AWSimpleKVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSimpleKVO.h; sourceTree = "<group>"; };
 		1032AC8F2111BCDB000F4160 /* AWSimpleKVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVO.m; sourceTree = "<group>"; };
-		1032AC942111BD57000F4160 /* TestSimpleKVO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestSimpleKVO.h; sourceTree = "<group>"; };
-		1032AC952111BD57000F4160 /* TestSimpleKVO.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestSimpleKVO.m; sourceTree = "<group>"; };
+		1032AC942111BD57000F4160 /* AWSimpleKVOUsage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AWSimpleKVOUsage.h; sourceTree = "<group>"; };
+		1032AC952111BD57000F4160 /* AWSimpleKVOUsage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOUsage.m; sourceTree = "<group>"; };
 		1032ACCC211AC3D7000F4160 /* AWSimpleKVOCounter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AWSimpleKVOCounter.h; sourceTree = "<group>"; };
 		1032ACCD211AC3D7000F4160 /* AWSimpleKVOCounter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOCounter.m; sourceTree = "<group>"; };
 		1032ACD0211AC61B000F4160 /* NSObject+AWSimpleKVO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+AWSimpleKVO.h"; sourceTree = "<group>"; };
@@ -47,6 +67,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		101C2D582238AED000A0DBC4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1032AC712111BCBF000F4160 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -57,12 +84,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		101C2D5C2238AED100A0DBC4 /* AWSimpleKVOTests */ = {
+			isa = PBXGroup;
+			children = (
+				101C2D5D2238AED100A0DBC4 /* AWSimpleKVOUtilsTests.m */,
+				101C2D682238B86F00A0DBC4 /* AWSimpleKVOCounterTests.m */,
+				101C2D6A2238D86B00A0DBC4 /* AWSimpleKVOItemTests.m */,
+				101C2D6C2238F14700A0DBC4 /* AWSimpleKVOTests.m */,
+				101C2D5F2238AED100A0DBC4 /* Info.plist */,
+			);
+			path = AWSimpleKVOTests;
+			sourceTree = "<group>";
+		};
 		1032AC6B2111BCBF000F4160 = {
 			isa = PBXGroup;
 			children = (
 				1032AC912111BD36000F4160 /* test */,
 				1032AC8D2111BCCE000F4160 /* src */,
 				1032AC762111BCBF000F4160 /* AWSimpleKVO */,
+				101C2D5C2238AED100A0DBC4 /* AWSimpleKVOTests */,
 				1032AC752111BCBF000F4160 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				1032AC742111BCBF000F4160 /* AWSimpleKVO.app */,
+				101C2D5B2238AED000A0DBC4 /* AWSimpleKVOTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,8 +152,8 @@
 		1032AC912111BD36000F4160 /* test */ = {
 			isa = PBXGroup;
 			children = (
-				1032AC942111BD57000F4160 /* TestSimpleKVO.h */,
-				1032AC952111BD57000F4160 /* TestSimpleKVO.m */,
+				1032AC942111BD57000F4160 /* AWSimpleKVOUsage.h */,
+				1032AC952111BD57000F4160 /* AWSimpleKVOUsage.m */,
 			);
 			path = test;
 			sourceTree = "<group>";
@@ -120,6 +161,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		101C2D5A2238AED000A0DBC4 /* AWSimpleKVOTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 101C2D622238AED100A0DBC4 /* Build configuration list for PBXNativeTarget "AWSimpleKVOTests" */;
+			buildPhases = (
+				101C2D572238AED000A0DBC4 /* Sources */,
+				101C2D582238AED000A0DBC4 /* Frameworks */,
+				101C2D592238AED000A0DBC4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				101C2D612238AED100A0DBC4 /* PBXTargetDependency */,
+			);
+			name = AWSimpleKVOTests;
+			productName = AWSimpleKVOTests;
+			productReference = 101C2D5B2238AED000A0DBC4 /* AWSimpleKVOTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		1032AC732111BCBF000F4160 /* AWSimpleKVO */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1032AC8A2111BCC1000F4160 /* Build configuration list for PBXNativeTarget "AWSimpleKVO" */;
@@ -145,6 +204,10 @@
 			attributes = {
 				LastUpgradeCheck = 0940;
 				TargetAttributes = {
+					101C2D5A2238AED000A0DBC4 = {
+						CreatedOnToolsVersion = 10.1;
+						TestTargetID = 1032AC732111BCBF000F4160;
+					};
 					1032AC732111BCBF000F4160 = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
@@ -164,11 +227,19 @@
 			projectRoot = "";
 			targets = (
 				1032AC732111BCBF000F4160 /* AWSimpleKVO */,
+				101C2D5A2238AED000A0DBC4 /* AWSimpleKVOTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		101C2D592238AED000A0DBC4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1032AC722111BCBF000F4160 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -182,13 +253,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		101C2D572238AED000A0DBC4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				101C2D5E2238AED100A0DBC4 /* AWSimpleKVOUtilsTests.m in Sources */,
+				101C2D6B2238D86B00A0DBC4 /* AWSimpleKVOItemTests.m in Sources */,
+				101C2D6D2238F14700A0DBC4 /* AWSimpleKVOTests.m in Sources */,
+				101C2D692238B86F00A0DBC4 /* AWSimpleKVOCounterTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1032AC702111BCBF000F4160 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				101C2D53223895D400A0DBC4 /* AWSimpleKVOUtils.m in Sources */,
 				1032ACD2211AC61B000F4160 /* NSObject+AWSimpleKVO.m in Sources */,
-				1032AC962111BD57000F4160 /* TestSimpleKVO.m in Sources */,
+				1032AC962111BD57000F4160 /* AWSimpleKVOUsage.m in Sources */,
 				1032AC7C2111BCBF000F4160 /* ViewController.m in Sources */,
 				1032AC872111BCC1000F4160 /* main.m in Sources */,
 				101C2D56223896AA00A0DBC4 /* AWSimpleKVOItem.m in Sources */,
@@ -199,6 +281,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		101C2D612238AED100A0DBC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1032AC732111BCBF000F4160 /* AWSimpleKVO */;
+			targetProxy = 101C2D602238AED100A0DBC4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		1032AC7D2111BCC0000F4160 /* Main.storyboard */ = {
@@ -220,6 +310,49 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		101C2D632238AED100A0DBC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src";
+				INFOPLIST_FILE = AWSimpleKVOTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AWSimpleKVOTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AWSimpleKVO.app/AWSimpleKVO";
+			};
+			name = Debug;
+		};
+		101C2D642238AED100A0DBC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src";
+				INFOPLIST_FILE = AWSimpleKVOTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AWSimpleKVOTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AWSimpleKVO.app/AWSimpleKVO";
+			};
+			name = Release;
+		};
 		1032AC882111BCC1000F4160 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -365,6 +498,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		101C2D622238AED100A0DBC4 /* Build configuration list for PBXNativeTarget "AWSimpleKVOTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				101C2D632238AED100A0DBC4 /* Debug */,
+				101C2D642238AED100A0DBC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1032AC6F2111BCBF000F4160 /* Build configuration list for PBXProject "AWSimpleKVO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
