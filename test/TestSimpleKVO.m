@@ -18,6 +18,18 @@
 
 @implementation TestSimpleKVO
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
+    NSLog(@"");
+}
+
++(void) testSrc{
+    TestSimpleKVO *testObj = [[TestSimpleKVO alloc] init];
+    
+    [testObj addObserver:testObj forKeyPath:@"s" options:NSKeyValueObservingOptionNew context:nil];
+    
+    testObj.s = @"123";
+}
+
 +(void) testCommon{
     TestSimpleKVO *testObj = [[TestSimpleKVO alloc] init];
     ///1. 添加监听
@@ -86,8 +98,9 @@
 }
 
 +(void) testSimpleKVO{
-    [self testCommon];
+//    [self testCommon];
 //    [self testAsync];
+    [self testSrc];
 }
 
 - (void)dealloc {

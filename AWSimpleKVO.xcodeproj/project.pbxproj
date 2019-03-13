@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		101C2D53223895D400A0DBC4 /* AWSimpleKVOUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C2D52223895D400A0DBC4 /* AWSimpleKVOUtils.m */; };
+		101C2D56223896AA00A0DBC4 /* AWSimpleKVOItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C2D55223896AA00A0DBC4 /* AWSimpleKVOItem.m */; };
 		1032AC792111BCBF000F4160 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032AC782111BCBF000F4160 /* AppDelegate.m */; };
 		1032AC7C2111BCBF000F4160 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1032AC7B2111BCBF000F4160 /* ViewController.m */; };
 		1032AC7F2111BCC0000F4160 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1032AC7D2111BCC0000F4160 /* Main.storyboard */; };
@@ -20,6 +22,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		101C2D51223895D400A0DBC4 /* AWSimpleKVOUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AWSimpleKVOUtils.h; sourceTree = "<group>"; };
+		101C2D52223895D400A0DBC4 /* AWSimpleKVOUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOUtils.m; sourceTree = "<group>"; };
+		101C2D54223896AA00A0DBC4 /* AWSimpleKVOItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AWSimpleKVOItem.h; sourceTree = "<group>"; };
+		101C2D55223896AA00A0DBC4 /* AWSimpleKVOItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AWSimpleKVOItem.m; sourceTree = "<group>"; };
 		1032AC742111BCBF000F4160 /* AWSimpleKVO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AWSimpleKVO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1032AC772111BCBF000F4160 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1032AC782111BCBF000F4160 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -88,8 +94,12 @@
 		1032AC8D2111BCCE000F4160 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				101C2D51223895D400A0DBC4 /* AWSimpleKVOUtils.h */,
+				101C2D52223895D400A0DBC4 /* AWSimpleKVOUtils.m */,
 				1032ACCC211AC3D7000F4160 /* AWSimpleKVOCounter.h */,
 				1032ACCD211AC3D7000F4160 /* AWSimpleKVOCounter.m */,
+				101C2D54223896AA00A0DBC4 /* AWSimpleKVOItem.h */,
+				101C2D55223896AA00A0DBC4 /* AWSimpleKVOItem.m */,
 				1032AC8E2111BCDB000F4160 /* AWSimpleKVO.h */,
 				1032AC8F2111BCDB000F4160 /* AWSimpleKVO.m */,
 				1032ACD0211AC61B000F4160 /* NSObject+AWSimpleKVO.h */,
@@ -176,10 +186,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				101C2D53223895D400A0DBC4 /* AWSimpleKVOUtils.m in Sources */,
 				1032ACD2211AC61B000F4160 /* NSObject+AWSimpleKVO.m in Sources */,
 				1032AC962111BD57000F4160 /* TestSimpleKVO.m in Sources */,
 				1032AC7C2111BCBF000F4160 /* ViewController.m in Sources */,
 				1032AC872111BCC1000F4160 /* main.m in Sources */,
+				101C2D56223896AA00A0DBC4 /* AWSimpleKVOItem.m in Sources */,
 				1032ACCE211AC3D7000F4160 /* AWSimpleKVOCounter.m in Sources */,
 				1032AC902111BCDB000F4160 /* AWSimpleKVO.m in Sources */,
 				1032AC792111BCBF000F4160 /* AppDelegate.m in Sources */,

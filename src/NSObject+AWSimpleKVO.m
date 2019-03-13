@@ -46,13 +46,13 @@ static char awSimpleKVOIgnoreEqualValueKey = 0;
 }
 
 ///增加属性监听
--(void)awAddObserverForKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block{
-    [self.awSimpleKVO addObserverForKeyPath:keyPath options:options context:context block:block];
+-(BOOL)awAddObserverForKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block{
+    return [self.awSimpleKVO addObserverForKeyPath:keyPath options:options context:context block:block];
 }
 
 ///为多个属性添加监听
--(void)awAddObserverForKeyPaths:(NSArray<NSString *> *) keyPaths options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block{
-    [self.awSimpleKVO addObserverForKeyPaths:keyPaths options:options context:context block:block];
+-(NSArray<NSString *> *)awAddObserverForKeyPaths:(NSArray<NSString *> *) keyPaths options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block{
+    return [self.awSimpleKVO addObserverForKeyPaths:keyPaths options:options context:context block:block];
 }
 
 ///移除属性监听

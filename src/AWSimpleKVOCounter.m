@@ -43,7 +43,7 @@
 }
 
 ///增加计数
--(void) increaceForClassName:(NSString *)name{
+-(BOOL) increaceForClassName:(NSString *)name{
     @synchronized(self){
         AWSimpleKVOCounterItem *item = self.items[name];
         if(!item){
@@ -54,17 +54,22 @@
         }
         item.count++;
     }
+    return YES;
 }
 
 ///减少计数
--(void) reduceForClassName:(NSString *)name{
+-(BOOL) reduceForClassName:(NSString *)name{
     @synchronized(self){
         AWSimpleKVOCounterItem *item = self.items[name];
         NSAssert(item != nil, @"错误");
-        item.count --;
-        if (item.count <= 0) {
-            self.items[name] = nil;
+        if(item.count > 0){
+            item.count --;
+            if (item.count <= 0) {
+                self.items[name] = nil;
+            }
+            return YES;
         }
+        return NO;
     }
 }
 

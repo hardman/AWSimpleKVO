@@ -15,8 +15,8 @@
 ///开始观察keyPath属性
 -(BOOL)addObserverForKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block;
 
-///开始观察多个keyPaths
--(BOOL)addObserverForKeyPaths:(NSArray<NSString *> *) keyPaths options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block;
+///开始观察多个keyPaths，返回监听成功的keypath
+-(NSArray<NSString *> *)addObserverForKeyPaths:(NSArray<NSString *> *) keyPaths options:(NSKeyValueObservingOptions)options context:(void *)context block:(void (^)(NSObject *observer, NSString *keyPath, NSDictionary *change, void *context)) block;
 
 ///停止观察keyPath属性
 -(void)removeObserverForKeyPath:(NSString *)keyPath context:(void *)context;
