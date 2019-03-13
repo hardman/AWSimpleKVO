@@ -102,7 +102,7 @@
 ///加入item
 -(BOOL) addItem:(AWSimpleKVOItem *)item {
     if (![item isKindOfClass:[AWSimpleKVOItem class]]) {
-        return nil;
+        return NO;
     }
     @synchronized(self) {
         if (self.observerDict[item.keyPath]) {
